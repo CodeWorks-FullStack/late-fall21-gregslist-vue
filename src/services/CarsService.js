@@ -19,7 +19,7 @@ class CarsService {
   async createCar(newCar) {
     const res = await api.post('api/cars', newCar)
     logger.log(res.data)
-    AppState.cars.push(new Car(res.data))
+    // AppState.cars.push(new Car(res.data))
   }
 
   async editCar(updatedCar) {
@@ -43,15 +43,15 @@ class CarsService {
     }
     const res = await api.post(`api/cars/${carId}/bids`, { rate })
     logger.log('create bid res', res.data)
-    AppState.bids.unshift(res.data)
+    // AppState.bids.unshift(res.data)
   }
 
   async increaseBid(carId, bidderId) {
     let rate = AppState.bids[0].rate + 100
     const res = await api.put(`api/cars/${carId}/bids`, { rate })
     logger.log('increase bid res', res.data)
-    AppState.bids = AppState.bids.filter(b => b.accountId !== bidderId)
-    AppState.bids.unshift(res.data)
+    // AppState.bids = AppState.bids.filter(b => b.accountId !== bidderId)
+    // AppState.bids.unshift(res.data)
   }
 
   // async getComments(carId) {

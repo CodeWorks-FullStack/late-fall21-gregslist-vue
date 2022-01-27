@@ -118,34 +118,39 @@
 </template>
 
 <script>
-import { computed, onMounted } from "@vue/runtime-core";
-import { carsService } from "../services/CarsService.js";
-import { useRoute } from "vue-router";
-import { AppState } from "../AppState.js";
-import Pop from "../utils/Pop.js";
-import { logger } from "../utils/Logger.js";
+import { computed, onMounted } from "@vue/runtime-core"
+import { carsService } from "../services/CarsService.js"
+import { onBeforeRouteLeave, useRoute } from "vue-router"
+import { AppState } from "../AppState.js"
+import Pop from "../utils/Pop.js"
+import { logger } from "../utils/Logger.js"
+import { socketService } from '../services/SocketService.js'
 export default {
   setup() {
-    const route = useRoute();
+    const route = useRoute()
     onMounted(() => {
-      carsService.getById(route.params.id);
-      carsService.getBidsByCar(route.params.id);
-    });
+      carsService.getById(route.params.id)
+      carsService.getBidsByCar(route.params.id)
+      socketService.joinRoom(route.params.id)
+    })
+    onBeforeRouteLeave(() => {
+      socketService.leaveRoom(route.params.id)
+    })
     return {
       async createBid() {
         try {
-          await carsService.createBid(route.params.id);
+          await carsService.createBid(route.params.id)
         } catch (error) {
-          Pop.toast(error.message, "error");
-          logger.log(error);
+          Pop.toast(error.message, "error")
+          logger.log(error)
         }
       },
       async increaseBid(bidderId) {
         try {
-          await carsService.increaseBid(route.params.id, bidderId);
+          await carsService.increaseBid(route.params.id, bidderId)
         } catch (error) {
-          Pop.toast(error.message, "error");
-          logger.log(error);
+          Pop.toast(error.message, "error")
+          logger.log(error)
         }
       },
       account: computed(() => AppState.account),
@@ -155,7 +160,7 @@ export default {
       hasBid: computed(() =>
         AppState.bids.find((b) => b.accountId == AppState.account.id)
       ),
-    };
+    }
   },
 };
 </script>
